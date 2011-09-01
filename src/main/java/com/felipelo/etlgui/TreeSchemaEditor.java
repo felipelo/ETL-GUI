@@ -1,7 +1,9 @@
 package com.felipelo.etlgui;
 
+import br.com.saxes.suite.model.TreeNode;
 import br.com.saxes.suite.model.TreeSchema;
 import br.com.saxes.suite.model.txt.DelimitedTXTTreeSchema;
+import br.com.saxes.suite.model.txt.LineTreeNode;
 import br.com.saxes.suite.model.txt.TXTTreeSchema;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -23,11 +25,23 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
 		treeSchema = new DelimitedTXTTreeSchema();
 		treeSchema.setName("Delimited Txt Schema");
 		
-		treeModel = new DefaultTreeModel( new DefaultMutableTreeNode(treeSchema, true) );
+		LineTreeNode _line = new LineTreeNode();
+		_line.setName("Line");
+		treeSchema.setRoot( _line );
+		
+		DefaultMutableTreeNode _mTreeSchema = new DefaultMutableTreeNode(treeSchema);
+		_mTreeSchema.add( new DefaultMutableTreeNode(_line) );
+		treeModel = new DefaultTreeModel( _mTreeSchema );
+		
+		
+		
+		
 		tableModel = new DefaultTableModel( new String[] {"Property", "Value"}, 0 );
 		
 		initComponents();
 	}
+	
+//	private void add
 
 	/** This method is called from within the constructor to
 	 * initialize the form.
@@ -45,7 +59,7 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
         jToolBar1 = new javax.swing.JToolBar();
-        jButton1 = new javax.swing.JButton();
+        btnAdd = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -75,13 +89,13 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
         jToolBar1.setFloatable(false);
         jToolBar1.setBorderPainted(false);
 
-        jButton1.setText("+");
-        jButton1.setToolTipText("Add");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setPreferredSize(new java.awt.Dimension(25, 25));
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton1);
+        btnAdd.setText("+");
+        btnAdd.setToolTipText("Add Line");
+        btnAdd.setFocusable(false);
+        btnAdd.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnAdd.setPreferredSize(new java.awt.Dimension(25, 25));
+        btnAdd.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(btnAdd);
 
         jButton2.setText("-");
         jButton2.setToolTipText("Remove");
@@ -176,7 +190,7 @@ private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN
 		});
 	}
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnAdd;
     private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

@@ -1,6 +1,8 @@
 package com.felipelo.etlgui;
 
+import br.com.saxes.suite.model.TreeNode;
 import br.com.saxes.suite.model.TreeSchema;
+import br.com.saxes.suite.model.txt.LineTreeNode;
 import java.awt.Component;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -21,6 +23,8 @@ public class DelimitedTXTTreeCellRenderer extends DefaultTreeCellRenderer {
 		
 		if( _userObj instanceof br.com.saxes.suite.model.txt.DelimitedTXTTreeSchema ) {
 			setText( ((TreeSchema)_userObj).getName() );
+		} else if( _userObj instanceof LineTreeNode ) {
+			setText( ((TreeNode)_userObj).getName() );
 		}
 		
 		
