@@ -1,6 +1,8 @@
 package com.felipelo.etlgui;
 
+import br.com.saxes.suite.model.TreeSchema;
 import br.com.saxes.suite.model.txt.DelimitedTXTTreeSchema;
+import br.com.saxes.suite.model.txt.TXTTreeSchema;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -118,7 +120,24 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
 private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jTree1ValueChanged
-	System.out.println(tre);
+		tableModel = new DefaultTableModel( new String[] {"Property", "Value"}, 0 );
+		jTable1.setModel( tableModel );
+		
+		Object _userObj = ((DefaultMutableTreeNode)jTree1.getLastSelectedPathComponent()).getUserObject();
+        
+        if( _userObj instanceof TXTTreeSchema) {
+            TXTTreeSchema _txtTreeSchema = (TXTTreeSchema) _userObj;
+            
+            tableModel.addRow(new String[] {"Name", _txtTreeSchema.getName()});
+            tableModel.addRow(new String[] {"Field Qualifier", _txtTreeSchema.getFieldQualifier()});
+        } 
+        
+        if( _userObj instanceof DelimitedTXTTreeSchema ) {
+            DelimitedTXTTreeSchema _txtTreeSchema = (DelimitedTXTTreeSchema) _userObj;
+            
+            tableModel.addRow( new String[] {"Line Delimiter", String.valueOf(_txtTreeSchema.getLineDelimiter())} );
+            tableModel.addRow( new String[] {"Column Delimiter", String.valueOf(_txtTreeSchema.getLineDelimiter())} );
+        }
 }//GEN-LAST:event_jTree1ValueChanged
 
 	/**
