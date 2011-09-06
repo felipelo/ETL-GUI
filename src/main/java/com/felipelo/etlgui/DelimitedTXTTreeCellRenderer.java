@@ -21,9 +21,7 @@ public class DelimitedTXTTreeCellRenderer extends DefaultTreeCellRenderer {
 		DefaultMutableTreeNode _treeNode = (DefaultMutableTreeNode) value;
 		Object _userObj = _treeNode.getUserObject();
 		
-		if( _userObj instanceof br.com.saxes.suite.model.txt.DelimitedTXTTreeSchema ) {
-			setText( ((TreeSchema)_userObj).getName() );
-		} else if( _userObj instanceof LineTreeNode ) {
+		if( _userObj instanceof TreeNode ) {
 			setText( ((TreeNode)_userObj).getName() );
 		}
 		

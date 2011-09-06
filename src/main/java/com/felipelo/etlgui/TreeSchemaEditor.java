@@ -1,10 +1,12 @@
 package com.felipelo.etlgui;
 
+import br.com.saxes.suite.model.TextTreeNode;
 import br.com.saxes.suite.model.TreeNode;
-import br.com.saxes.suite.model.TreeSchema;
 import br.com.saxes.suite.model.txt.DelimitedTXTTreeSchema;
 import br.com.saxes.suite.model.txt.LineTreeNode;
 import br.com.saxes.suite.model.txt.TXTTreeSchema;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -16,7 +18,7 @@ import javax.swing.tree.DefaultTreeModel;
 public class TreeSchemaEditor extends javax.swing.JFrame {
 
 	private DefaultTreeModel treeModel;
-	private DefaultTableModel tableModel;
+	private PropertyTableModel tableModel;
 	
 	private DelimitedTXTTreeSchema treeSchema;
 	
@@ -30,13 +32,12 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
 		treeSchema.setRoot( _line );
 		
 		DefaultMutableTreeNode _mTreeSchema = new DefaultMutableTreeNode(treeSchema);
-		_mTreeSchema.add( new DefaultMutableTreeNode(_line) );
+		DefaultMutableTreeNode _mLine = new DefaultMutableTreeNode(_line);
+		
+		_mTreeSchema.add( _mLine );
+		
 		treeModel = new DefaultTreeModel( _mTreeSchema );
-		
-		
-		
-		
-		tableModel = new DefaultTableModel( new String[] {"Property", "Value"}, 0 );
+		tableModel = new PropertyTableModel();
 		
 		initComponents();
 	}
@@ -95,6 +96,11 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
         btnAdd.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAdd.setPreferredSize(new java.awt.Dimension(25, 25));
         btnAdd.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnAdd);
 
         jButton2.setText("-");
@@ -134,25 +140,28 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
 private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jTree1ValueChanged
-		tableModel = new DefaultTableModel( new String[] {"Property", "Value"}, 0 );
-		jTable1.setModel( tableModel );
-		
 		Object _userObj = ((DefaultMutableTreeNode)jTree1.getLastSelectedPathComponent()).getUserObject();
-        
-        if( _userObj instanceof TXTTreeSchema) {
-            TXTTreeSchema _txtTreeSchema = (TXTTreeSchema) _userObj;
-            
-            tableModel.addRow(new String[] {"Name", _txtTreeSchema.getName()});
-            tableModel.addRow(new String[] {"Field Qualifier", _txtTreeSchema.getFieldQualifier()});
-        } 
-        
-        if( _userObj instanceof DelimitedTXTTreeSchema ) {
-            DelimitedTXTTreeSchema _txtTreeSchema = (DelimitedTXTTreeSchema) _userObj;
-            
-            tableModel.addRow( new String[] {"Line Delimiter", String.valueOf(_txtTreeSchema.getLineDelimiter())} );
-            tableModel.addRow( new String[] {"Column Delimiter", String.valueOf(_txtTreeSchema.getLineDelimiter())} );
-        }
+		
+		tableModel.setTreeNode( (TreeNode)_userObj );
 }//GEN-LAST:event_jTree1ValueChanged
+
+private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+		DefaultMutableTreeNode _node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
+		Object _userObj = _node.getUserObject();
+		if( _userObj instanceof LineTreeNode ) {
+			LineTreeNode _line = (LineTreeNode) _userObj;
+			
+			TextTreeNode _newTextNode = new TextTreeNode();
+			_newTextNode.setName("New Node");
+			
+			_line.addChild( _newTextNode );
+			
+			DefaultMutableTreeNode _newNode = new DefaultMutableTreeNode( _newTextNode );
+			
+			_node.insert(_newNode, _node.getChildCount());
+			treeModel.reload(_node);
+		}
+}//GEN-LAST:event_btnAddActionPerformed
 
 	/**
 	 * @param args the command line arguments
@@ -165,7 +174,8 @@ private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN
 		 */
 		try {
 			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-				if ("Nimbus".equals(info.getName())) {
+				System.out.println(info.getName());
+				if ("GTK+".equals(info.getName())) {
 					javax.swing.UIManager.setLookAndFeel(info.getClassName());
 					break;
 				}
@@ -185,7 +195,10 @@ private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN
 		java.awt.EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-				new TreeSchemaEditor().setVisible(true);
+				
+				TreeSchemaEditor d = new TreeSchemaEditor();
+				d.setLocationRelativeTo(null);
+				d.setVisible(true);
 			}
 		});
 	}
