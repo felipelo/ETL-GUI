@@ -1,13 +1,8 @@
 package com.felipelo.etlgui;
 
 import br.com.saxes.suite.model.TextTreeNode;
-import br.com.saxes.suite.model.TreeNode;
 import br.com.saxes.suite.model.txt.DelimitedTXTTreeSchema;
 import br.com.saxes.suite.model.txt.LineTreeNode;
-import br.com.saxes.suite.model.txt.TXTTreeSchema;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -37,7 +32,7 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
 		_mTreeSchema.add( _mLine );
 		
 		treeModel = new DefaultTreeModel( _mTreeSchema );
-		tableModel = new PropertyTableModel();
+		tableModel = new PropertyTableModel( treeModel );
 		
 		initComponents();
 	}
@@ -140,9 +135,12 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
 private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jTree1ValueChanged
-		Object _userObj = ((DefaultMutableTreeNode)jTree1.getLastSelectedPathComponent()).getUserObject();
+		DefaultMutableTreeNode _treeNode = (DefaultMutableTreeNode)jTree1.getLastSelectedPathComponent();
+		if( _treeNode == null ) {
+			return;
+		}
 		
-		tableModel.setTreeNode( (TreeNode)_userObj );
+		tableModel.setTreeNode( _treeNode );
 }//GEN-LAST:event_jTree1ValueChanged
 
 private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed

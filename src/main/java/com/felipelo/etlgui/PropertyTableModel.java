@@ -1,11 +1,11 @@
 package com.felipelo.etlgui;
 
 import br.com.saxes.suite.model.TreeNode;
-import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory.Default;
+import br.com.saxes.suite.model.txt.TXTTreeSchema;
 import javax.swing.JTree;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 
 /**
  *
@@ -16,19 +16,24 @@ public class PropertyTableModel extends AbstractTableModel {
 	private final static int NAME = 0;
 	private final static int DESCRIPTION = 1;
 	
+	private DefaultMutableTreeNode mutableTreeNode;
 	private TreeNode treeNode;
 	
 	private String columns[] = {"Property", "Value"};
 	
-//	private DefaultTreeModel treeModel;
+	private DefaultTreeModel treeModel;
 	
-	public PropertyTableModel( JTree treeModel ) {
+	public PropertyTableModel( DefaultTreeModel treeModel ) {
 		super();
-		treeModel.
+		this.treeModel = treeModel;
 	}
 	
-	public void setTreeNode( TreeNode treeNode ) {
-		this.treeNode = treeNode;
+	public void setTreeNode( DefaultMutableTreeNode mutableTreeNode ) {
+		this.mutableTreeNode = mutableTreeNode;
+		
+		TreeNode _treeNode = (TreeNode) mutableTreeNode.getUserObject();
+		this.treeNode = _treeNode;
+		
 		fireTableRowsInserted(0, 2);
 	}
 	
@@ -42,11 +47,21 @@ public class PropertyTableModel extends AbstractTableModel {
 				treeNode.setDescription( (String)aValue );
 		}
 		fireTableRowsInserted(rowIndex, rowIndex);
-		
+		treeModel.reload( mutableTreeNode );
     }
 
 	public int getRowCount() {
-		return ( treeNode == null ) ? 0 : 2;
+		int _rowCount = 0;
+		
+		if( treeNode == null ) {
+			_rowCount = 0;
+		} else if( treeNode instanceof TXTTreeSchema ) {
+			_rowCount = 4;
+		} else {
+			_rowCount = 2;
+		}
+		
+		return _rowCount;
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
@@ -58,6 +73,12 @@ public class PropertyTableModel extends AbstractTableModel {
 					return "Name";
 				case DESCRIPTION:
 					return "Description";
+				case 2:
+					if( treeNode instanceof TXTTreeSchema )
+						return "File Reference";
+				case 3:
+					if( treeNode instanceof TXTTreeSchema )
+						return "Field Qualifier";
 			}
 		}
 		
@@ -71,6 +92,14 @@ public class PropertyTableModel extends AbstractTableModel {
 				break;
 			case DESCRIPTION:
 				value = treeNode.getDescription();
+				break;
+			case 2:
+				if( treeNode instanceof TXTTreeSchema )
+					value = ((TXTTreeSchema)treeNode).getFileRef().getFilePath();
+				break;
+			case 3:
+				if( treeNode instanceof TXTTreeSchema )
+					value = ((TXTTreeSchema)treeNode).getFieldQualifier();
 		}
 		
 		return value;
