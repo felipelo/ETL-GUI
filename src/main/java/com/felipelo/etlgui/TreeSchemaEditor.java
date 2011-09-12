@@ -3,6 +3,7 @@ package com.felipelo.etlgui;
 import br.com.saxes.suite.model.TextTreeNode;
 import br.com.saxes.suite.model.txt.DelimitedTXTTreeSchema;
 import br.com.saxes.suite.model.txt.LineTreeNode;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -35,6 +36,8 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
 		tableModel = new PropertyTableModel( treeModel );
 		
 		initComponents();
+		
+		jTable1.getColumnModel().getColumn(1).setCellEditor( new PropertyCellEditor() );
 	}
 	
 //	private void add
@@ -112,6 +115,7 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
 
         jPanel3.setLayout(new java.awt.BorderLayout());
 
+        jTable1.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
         jTable1.setModel(tableModel);
         jTable1.setShowVerticalLines(false);
         jTable1.getTableHeader().setReorderingAllowed(false);
@@ -140,7 +144,7 @@ private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN
 		if( _treeNode == null ) {
 			return;
 		}
-		
+
 		tableModel.setTreeNode( _treeNode );
 }//GEN-LAST:event_jTree1ValueChanged
 
@@ -174,7 +178,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 		try {
 			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
 				System.out.println(info.getName());
-				if ("GTK+".equals(info.getName())) {
+				if ("Nimbus".equals(info.getName())) {
 					javax.swing.UIManager.setLookAndFeel(info.getClassName());
 					break;
 				}

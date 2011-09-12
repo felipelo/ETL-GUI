@@ -25,7 +25,6 @@
       <groupId>br.com.saxes.suite</groupId>
       <artifactId>SaxesSuiteAPI</artifactId>
       <version>0.9-SNAPSHOT</version>
-      <type>jar</type>
     </dependency>
   </dependencies>
 </project>

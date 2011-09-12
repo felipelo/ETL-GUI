@@ -1,6 +1,9 @@
 package com.felipelo.etlgui;
 
+import br.com.saxes.suite.converter.ValueType;
+import br.com.saxes.suite.model.TextTreeNode;
 import br.com.saxes.suite.model.TreeNode;
+import br.com.saxes.suite.model.txt.DelimitedTXTTreeSchema;
 import br.com.saxes.suite.model.txt.TXTTreeSchema;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -19,11 +22,13 @@ public class PropertyTableModel extends AbstractTableModel {
 	private TreeNode treeNode;
 	
 	private String columns[] = {"Property", "Value"};
+	private int rowCount;
 	
 	private DefaultTreeModel treeModel;
 	
 	public PropertyTableModel( DefaultTreeModel treeModel ) {
 		super();
+		rowCount = 0;
 		this.treeModel = treeModel;
 	}
 	
@@ -33,7 +38,19 @@ public class PropertyTableModel extends AbstractTableModel {
 		TreeNode _treeNode = (TreeNode) mutableTreeNode.getUserObject();
 		this.treeNode = _treeNode;
 		
-		fireTableRowsInserted(0, 2);
+		if( treeNode == null ) {
+			rowCount = 0;
+		} else if( treeNode instanceof DelimitedTXTTreeSchema ) {
+			rowCount = 6;
+		} else if( treeNode instanceof TXTTreeSchema ) {
+			rowCount = 4;
+		} else if( treeNode instanceof TextTreeNode ) {
+			rowCount = 3;
+		} else {
+			rowCount = 2;
+		}
+		
+		fireTableRowsInserted(0, rowCount);
 	}
 	
 	@Override
@@ -46,30 +63,32 @@ public class PropertyTableModel extends AbstractTableModel {
 				treeNode.setDescription( (String)aValue );
 				break;
 			case 2:
-				if( treeNode instanceof TXTTreeSchema )
+				if( treeNode instanceof TXTTreeSchema ) {
 					((TXTTreeSchema)treeNode).getFileRef().setFilePath((String)aValue);
+				} else if( treeNode instanceof TextTreeNode ) {
+					((TextTreeNode)treeNode).setValueType((ValueType)aValue);
+				}
 				break;
 			case 3:
 				if( treeNode instanceof TXTTreeSchema )
 					((TXTTreeSchema)treeNode).setFieldQualifier((String)aValue);
 				break;
+			case 4:
+				if( treeNode instanceof DelimitedTXTTreeSchema )
+					((DelimitedTXTTreeSchema)treeNode).setLineDelimiter((String)aValue);
+				break;
+			case 5:
+				if( treeNode instanceof DelimitedTXTTreeSchema )
+					((DelimitedTXTTreeSchema)treeNode).setColumnDelimiter((String)aValue);
+				break;
 		}
-		fireTableRowsInserted(rowIndex, rowIndex);
+		
+		fireTableCellUpdated(rowIndex, columnIndex);
 		treeModel.reload( mutableTreeNode );
     }
 
-	public int getRowCount() {
-		int _rowCount = 0;
-		
-		if( treeNode == null ) {
-			_rowCount = 0;
-		} else if( treeNode instanceof TXTTreeSchema ) {
-			_rowCount = 4;
-		} else {
-			_rowCount = 2;
-		}
-		
-		return _rowCount;
+	public int getRowCount() {		
+		return rowCount;
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
@@ -82,11 +101,20 @@ public class PropertyTableModel extends AbstractTableModel {
 				case DESCRIPTION:
 					return "Description";
 				case 2:
-					if( treeNode instanceof TXTTreeSchema )
+					if( treeNode instanceof TXTTreeSchema ) {
 						return "File Reference";
+					} else if( treeNode instanceof TextTreeNode ) {
+						return "Value Type";
+					}
 				case 3:
 					if( treeNode instanceof TXTTreeSchema )
 						return "Field Qualifier";
+				case 4:
+					if( treeNode instanceof DelimitedTXTTreeSchema )
+						return "Line Delimiter";
+				case 5:
+					if( treeNode instanceof DelimitedTXTTreeSchema )
+						return "Column Delimiter";
 			}
 		}
 		
@@ -102,12 +130,24 @@ public class PropertyTableModel extends AbstractTableModel {
 				value = treeNode.getDescription();
 				break;
 			case 2:
-				if( treeNode instanceof TXTTreeSchema )
+				if( treeNode instanceof TXTTreeSchema ) {
 					value = ((TXTTreeSchema)treeNode).getFileRef().getFilePath();
+				} else if( treeNode instanceof TextTreeNode ) {
+					value = ((TextTreeNode)treeNode).getValueType().toString();
+				}
 				break;
 			case 3:
 				if( treeNode instanceof TXTTreeSchema )
 					value = ((TXTTreeSchema)treeNode).getFieldQualifier();
+				break;
+			case 4:
+				if( treeNode instanceof DelimitedTXTTreeSchema )
+					value = ((DelimitedTXTTreeSchema)treeNode).getLineDelimiter();
+				break;
+			case 5:
+				if( treeNode instanceof DelimitedTXTTreeSchema )
+					value = ((DelimitedTXTTreeSchema)treeNode).getColumnDelimiter();
+				break;
 		}
 		
 		return value;
