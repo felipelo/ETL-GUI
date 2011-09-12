@@ -2,7 +2,6 @@ package com.felipelo.etlgui;
 
 import br.com.saxes.suite.model.TreeNode;
 import br.com.saxes.suite.model.txt.TXTTreeSchema;
-import javax.swing.JTree;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -45,6 +44,15 @@ public class PropertyTableModel extends AbstractTableModel {
 				break;
 			case DESCRIPTION:
 				treeNode.setDescription( (String)aValue );
+				break;
+			case 2:
+				if( treeNode instanceof TXTTreeSchema )
+					((TXTTreeSchema)treeNode).getFileRef().setFilePath((String)aValue);
+				break;
+			case 3:
+				if( treeNode instanceof TXTTreeSchema )
+					((TXTTreeSchema)treeNode).setFieldQualifier((String)aValue);
+				break;
 		}
 		fireTableRowsInserted(rowIndex, rowIndex);
 		treeModel.reload( mutableTreeNode );

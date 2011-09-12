@@ -129,6 +129,7 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
         gridBagConstraints.ipady = 2;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         getContentPane().add(jPanel1, gridBagConstraints);
 
         pack();
