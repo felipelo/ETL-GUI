@@ -1,6 +1,7 @@
 package com.felipelo.etlgui;
 
 import br.com.saxes.suite.converter.ValueType;
+import br.com.saxes.suite.model.DateTreeNode;
 import br.com.saxes.suite.model.TextTreeNode;
 import br.com.saxes.suite.model.TreeNode;
 import br.com.saxes.suite.model.txt.DelimitedTXTTreeSchema;
@@ -44,6 +45,8 @@ public class PropertyTableModel extends AbstractTableModel {
 			rowCount = 6;
 		} else if( treeNode instanceof TXTTreeSchema ) {
 			rowCount = 4;
+		} else if( treeNode instanceof DateTreeNode ) {
+			rowCount = 4;
 		} else if( treeNode instanceof TextTreeNode ) {
 			rowCount = 3;
 		} else {
@@ -55,6 +58,9 @@ public class PropertyTableModel extends AbstractTableModel {
 	
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+		if( aValue == null )
+			return;
+		
 		switch(rowIndex) {
 			case NAME:
 				treeNode.setName( (String)aValue );
@@ -65,13 +71,44 @@ public class PropertyTableModel extends AbstractTableModel {
 			case 2:
 				if( treeNode instanceof TXTTreeSchema ) {
 					((TXTTreeSchema)treeNode).getFileRef().setFilePath((String)aValue);
-				} else if( treeNode instanceof TextTreeNode ) {
-					((TextTreeNode)treeNode).setValueType((ValueType)aValue);
+				} else if( treeNode instanceof TextTreeNode ) {					
+					TextTreeNode _textTreeNode = (TextTreeNode) treeNode;
+					if( _textTreeNode.getValueType() != aValue) {
+						DefaultMutableTreeNode _parent = (DefaultMutableTreeNode) mutableTreeNode.getParent();
+						int _index = treeModel.getIndexOfChild( _parent, mutableTreeNode );
+						treeModel.removeNodeFromParent( mutableTreeNode );
+						switch((ValueType)aValue) {
+							case TEXT:
+								TextTreeNode _textTN = new TextTreeNode();
+								_textTN.setId( _textTreeNode.getId() );
+								_textTN.setName( _textTreeNode.getName() );
+								_textTN.setDescription( _textTreeNode.getDescription() );
+								_textTN.setParentTreeNode( _textTreeNode.getParentTreeNode() );
+								mutableTreeNode = new DefaultMutableTreeNode( _textTN );
+								this.treeNode = _textTN;
+								break;
+							case DATE:
+								DateTreeNode _dateTN = new DateTreeNode();
+								_dateTN.setId( _textTreeNode.getId() );
+								_dateTN.setName( _textTreeNode.getName() );
+								_dateTN.setDescription( _textTreeNode.getDescription() );
+								_dateTN.setParentTreeNode( _textTreeNode.getParentTreeNode() );
+								mutableTreeNode = new DefaultMutableTreeNode( _dateTN );
+								this.treeNode = _dateTN;
+								break;
+						}
+						
+						treeModel.insertNodeInto( mutableTreeNode, _parent, _index );
+					}					
 				}
 				break;
 			case 3:
-				if( treeNode instanceof TXTTreeSchema )
+				if( treeNode instanceof TXTTreeSchema ) {
 					((TXTTreeSchema)treeNode).setFieldQualifier((String)aValue);
+				} else if( treeNode instanceof DateTreeNode ) {
+					DateTreeNode _dateTN = (DateTreeNode) treeNode;
+					_dateTN.setFieldDateFormat( (String)aValue );
+				}
 				break;
 			case 4:
 				if( treeNode instanceof DelimitedTXTTreeSchema )
@@ -92,7 +129,8 @@ public class PropertyTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		String value = "";
+		
+		Object value = null;
 		
 		if( columnIndex == 0 ) {
 			switch(rowIndex) {
@@ -107,8 +145,11 @@ public class PropertyTableModel extends AbstractTableModel {
 						return "Value Type";
 					}
 				case 3:
-					if( treeNode instanceof TXTTreeSchema )
+					if( treeNode instanceof TXTTreeSchema ) {
 						return "Field Qualifier";
+					} else if( treeNode instanceof DateTreeNode ) {
+						return "Date Format";
+					}
 				case 4:
 					if( treeNode instanceof DelimitedTXTTreeSchema )
 						return "Line Delimiter";
@@ -133,12 +174,15 @@ public class PropertyTableModel extends AbstractTableModel {
 				if( treeNode instanceof TXTTreeSchema ) {
 					value = ((TXTTreeSchema)treeNode).getFileRef().getFilePath();
 				} else if( treeNode instanceof TextTreeNode ) {
-					value = ((TextTreeNode)treeNode).getValueType().toString();
+					value = ((TextTreeNode)treeNode).getValueType();
 				}
 				break;
 			case 3:
-				if( treeNode instanceof TXTTreeSchema )
+				if( treeNode instanceof TXTTreeSchema ) {
 					value = ((TXTTreeSchema)treeNode).getFieldQualifier();
+				} else if( treeNode instanceof DateTreeNode ) {
+					value = ((DateTreeNode)treeNode).getFieldDateFormat();
+				}
 				break;
 			case 4:
 				if( treeNode instanceof DelimitedTXTTreeSchema )

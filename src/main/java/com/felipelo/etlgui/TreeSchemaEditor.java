@@ -3,6 +3,7 @@ package com.felipelo.etlgui;
 import br.com.saxes.suite.model.TextTreeNode;
 import br.com.saxes.suite.model.txt.DelimitedTXTTreeSchema;
 import br.com.saxes.suite.model.txt.LineTreeNode;
+import javax.swing.plaf.basic.BasicTreeUI.CellEditorHandler;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -36,8 +37,6 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
 		tableModel = new PropertyTableModel( treeModel );
 		
 		initComponents();
-		
-		jTable1.getColumnModel().getColumn(1).setCellEditor( new PropertyCellEditor() );
 	}
 	
 //	private void add
@@ -141,11 +140,18 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
 
 private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jTree1ValueChanged
 		DefaultMutableTreeNode _treeNode = (DefaultMutableTreeNode)jTree1.getLastSelectedPathComponent();
+		System.out.println("55");
 		if( _treeNode == null ) {
 			return;
 		}
 
 		tableModel.setTreeNode( _treeNode );
+		if( _treeNode.getUserObject() instanceof TextTreeNode ) {
+			PropertyCellEditor _cellEditor = new TextPropertyCellEditor();
+			jTable1.getColumnModel().getColumn(1).setCellEditor( _cellEditor );
+		} else {
+			jTable1.getColumnModel().getColumn(1).setCellEditor( new PropertyCellEditor() );
+		}
 }//GEN-LAST:event_jTree1ValueChanged
 
 private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
