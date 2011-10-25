@@ -1,6 +1,8 @@
 package com.felipelo.etlgui;
 
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.AbstractCellEditor;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -32,7 +34,11 @@ public class PropertyCellEditor
 		_jTextField.setBorder(null);
 		_jTextField.setFont(table.getFont());
 		_jTextField.setText((String)value);
-		
+		_jTextField.addActionListener( new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				stopCellEditing();
+			}
+		});
 		this.value = _jTextField;
 		
 		return this.value;

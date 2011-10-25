@@ -1,12 +1,18 @@
 package com.felipelo.etlgui;
 
+import br.com.saxes.suite.converter.ValueType;
 import br.com.saxes.suite.model.TextTreeNode;
 import br.com.saxes.suite.model.txt.DelimitedTXTTreeSchema;
 import br.com.saxes.suite.model.txt.LineTreeNode;
-import javax.swing.plaf.basic.BasicTreeUI.CellEditorHandler;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 /**
  *
@@ -35,6 +41,26 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
 		
 		treeModel = new DefaultTreeModel( _mTreeSchema );
 		tableModel = new PropertyTableModel( treeModel );
+		
+		treeModel.addTreeModelListener( new TreeModelListener() {
+
+			public void treeNodesChanged(TreeModelEvent e) {}
+			public void treeNodesRemoved(TreeModelEvent e) {}
+
+			public void treeNodesInserted(TreeModelEvent e) {
+				for( Object _on : e.getChildren() ) {
+					TreeNode[] _treeNodes = treeModel.getPathToRoot((TreeNode)_on);
+					TreePath _path = new TreePath(_treeNodes);
+					
+					jTree1.setSelectionPath(_path);
+				}
+			}
+
+			public void treeStructureChanged(TreeModelEvent e) {
+				jTree1.expandPath( e.getTreePath() );
+				jTree1.setSelectionPath( e.getTreePath() );
+			}
+		});
 		
 		initComponents();
 	}
@@ -116,6 +142,7 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
 
         jTable1.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
         jTable1.setModel(tableModel);
+        jTable1.setRowSelectionAllowed(false);
         jTable1.setShowVerticalLines(false);
         jTable1.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(jTable1);
@@ -140,16 +167,27 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
 
 private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jTree1ValueChanged
 		DefaultMutableTreeNode _treeNode = (DefaultMutableTreeNode)jTree1.getLastSelectedPathComponent();
-		System.out.println("55");
+		
 		if( _treeNode == null ) {
+			tableModel.setTreeNode(null);
 			return;
 		}
 
 		tableModel.setTreeNode( _treeNode );
 		if( _treeNode.getUserObject() instanceof TextTreeNode ) {
-			PropertyCellEditor _cellEditor = new TextPropertyCellEditor();
-			jTable1.getColumnModel().getColumn(1).setCellEditor( _cellEditor );
+			JComboBox _comp = new JComboBox();
+			_comp.setFont(jTable1.getFont());
+			_comp.setBorder(null);
+			for( ValueType _valueType : ValueType.values() ) {
+				_comp.addItem( _valueType );
+			}
+			
+			jTable1.getColumnModel().getColumn(1).setCellEditor( new TextPropertyCellEditor() );
 		} else {
+			JTextField _jTextField = new JTextField();
+			_jTextField.setBorder(null);
+			_jTextField.setFont(jTable1.getFont());
+			
 			jTable1.getColumnModel().getColumn(1).setCellEditor( new PropertyCellEditor() );
 		}
 }//GEN-LAST:event_jTree1ValueChanged
