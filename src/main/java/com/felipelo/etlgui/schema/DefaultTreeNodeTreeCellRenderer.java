@@ -1,4 +1,4 @@
-package com.felipelo.etlgui;
+package com.felipelo.etlgui.schema;
 
 import br.com.saxes.suite.model.TreeNode;
 import br.com.saxes.suite.model.TreeSchema;
@@ -12,7 +12,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
  *
  * @author felipe
  */
-public class DelimitedTXTTreeCellRenderer extends DefaultTreeCellRenderer {
+public class DefaultTreeNodeTreeCellRenderer extends DefaultTreeCellRenderer {
 
 	@Override
 	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {

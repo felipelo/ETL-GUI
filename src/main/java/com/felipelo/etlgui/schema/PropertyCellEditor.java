@@ -1,4 +1,4 @@
-package com.felipelo.etlgui;
+package com.felipelo.etlgui.schema;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;

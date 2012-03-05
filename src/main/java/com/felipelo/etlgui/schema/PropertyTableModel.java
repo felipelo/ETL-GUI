@@ -1,4 +1,4 @@
-package com.felipelo.etlgui;
+package com.felipelo.etlgui.schema;
 
 import br.com.saxes.suite.converter.ValueType;
 import br.com.saxes.suite.model.DateTreeNode;
@@ -7,12 +7,17 @@ import br.com.saxes.suite.model.TextTreeNode;
 import br.com.saxes.suite.model.TreeNode;
 import br.com.saxes.suite.model.txt.DelimitedTXTTreeSchema;
 import br.com.saxes.suite.model.txt.TXTTreeSchema;
+import com.felipelo.etlgui.schema.model.DateMutable;
+import com.felipelo.etlgui.schema.model.NumericMutable;
+import com.felipelo.etlgui.schema.model.TextMutable;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
+import com.felipelo.etlgui.schema.model.TreeNodeMutable;
+		
 /**
  *
  * @author felipe
@@ -22,13 +27,13 @@ public class PropertyTableModel extends AbstractTableModel {
 	private final static int NAME = 0;
 	private final static int DESCRIPTION = 1;
 	
-	private DefaultMutableTreeNode mutableTreeNode;
-	private TreeNode treeNode;
+	protected TreeNodeMutable mutableTreeNode;
+	protected TreeNode treeNode;
 	
 	private String columns[] = {"Property", "Value"};
 	private int rowCount;
 	
-	private DefaultTreeModel treeModel;
+	protected DefaultTreeModel treeModel;
 	
 	public PropertyTableModel( DefaultTreeModel treeModel ) {
 		super();
@@ -37,29 +42,12 @@ public class PropertyTableModel extends AbstractTableModel {
 	}
 	
 	public void setTreeNode( DefaultMutableTreeNode mutableTreeNode ) {
-		this.mutableTreeNode = mutableTreeNode;
-		
-		
-		
 		if( mutableTreeNode == null ) {
 			rowCount = 0;
-			this.treeNode = null;			
+			this.treeNode = null;
 		} else {
-			TreeNode _treeNode = (TreeNode) mutableTreeNode.getUserObject();
-			this.treeNode = _treeNode;
-			if( treeNode instanceof DelimitedTXTTreeSchema ) {
-				rowCount = 6;
-			} else if( treeNode instanceof TXTTreeSchema ) {
-				rowCount = 4;
-			} else if( treeNode instanceof DateTreeNode ) {
-				rowCount = 4;
-			} else if( treeNode instanceof NumericTreeNode ) {
-				rowCount = 4;	
-		} else if( treeNode instanceof TextTreeNode ) {
-				rowCount = 3;
-			} else {
-				rowCount = 2;
-			}
+			this.mutableTreeNode = (TreeNodeMutable) mutableTreeNode;
+			rowCount = this.mutableTreeNode.getRowCount();
 		}
 		
 		fireTableRowsInserted(0, rowCount);
@@ -72,38 +60,27 @@ public class PropertyTableModel extends AbstractTableModel {
 		
 		switch(rowIndex) {
 			case NAME:
-				treeNode.setName( (String)aValue );
+				treeNode.setName( String.valueOf(aValue) );
 				treeModel.reload( mutableTreeNode );
 				break;
 			case DESCRIPTION:
-				treeNode.setDescription( (String)aValue );
+				treeNode.setDescription( String.valueOf(aValue) );
 				break;
 			case 2:
-				if( treeNode instanceof TXTTreeSchema ) {
-					((TXTTreeSchema)treeNode).getFileRef().setFilePath((String)aValue);
-				} else if( treeNode instanceof TextTreeNode ) {					
+				if( treeNode instanceof TextTreeNode ) {					
 					TextTreeNode _textTreeNode = (TextTreeNode) treeNode;
 					if( _textTreeNode.getValueType() != aValue) {
 						DefaultMutableTreeNode _parent = (DefaultMutableTreeNode) mutableTreeNode.getParent();
 						int _index = treeModel.getIndexOfChild( _parent, mutableTreeNode );
 						DefaultMutableTreeNode _oldMutable = mutableTreeNode;
 						switch((ValueType)aValue) {
-							case TEXT:
-								TextTreeNode _textTN = new TextTreeNode();
-								_textTN.setId( _textTreeNode.getId() );
-								_textTN.setName( _textTreeNode.getName() );
-								_textTN.setDescription( _textTreeNode.getDescription() );
-								_textTN.setParentTreeNode( _textTreeNode.getParentTreeNode() );
-								mutableTreeNode = new DefaultMutableTreeNode( _textTN );
-								this.treeNode = _textTN;
-								break;
 							case DATE:
 								DateTreeNode _dateTN = new DateTreeNode();
 								_dateTN.setId( _textTreeNode.getId() );
 								_dateTN.setName( _textTreeNode.getName() );
 								_dateTN.setDescription( _textTreeNode.getDescription() );
 								_dateTN.setParentTreeNode( _textTreeNode.getParentTreeNode() );
-								mutableTreeNode = new DefaultMutableTreeNode( _dateTN );
+								mutableTreeNode = new DateMutable( _dateTN );
 								this.treeNode = _dateTN;
 								break;
 							case NUMERIC:
@@ -112,7 +89,7 @@ public class PropertyTableModel extends AbstractTableModel {
 								_numTN.setName( _textTreeNode.getName() );
 								_numTN.setDescription( _textTreeNode.getDescription() );
 								_numTN.setParentTreeNode( _textTreeNode.getParentTreeNode() );
-								mutableTreeNode = new DefaultMutableTreeNode( _numTN );
+								mutableTreeNode = new NumericMutable( _numTN );
 								this.treeNode = _numTN;
 								break;
 						}
@@ -123,23 +100,21 @@ public class PropertyTableModel extends AbstractTableModel {
 				}
 				break;
 			case 3:
-				if( treeNode instanceof TXTTreeSchema ) {
-					((TXTTreeSchema)treeNode).setFieldQualifier((String)aValue);
-				} else if( treeNode instanceof DateTreeNode ) {
+				if( treeNode instanceof DateTreeNode ) {
 					DateTreeNode _dateTN = (DateTreeNode) treeNode;
-					_dateTN.setFieldDateFormat( (String)aValue );
+					_dateTN.setFieldDateFormat( String.valueOf(aValue) );
 				} else if( treeNode instanceof NumericTreeNode ) {
 					NumericTreeNode _numTN = (NumericTreeNode) treeNode;
-					_numTN.setFieldNumFormat( (String)aValue );
+					_numTN.setFieldNumFormat( String.valueOf(aValue) );
 				}
 				break;
 			case 4:
 				if( treeNode instanceof DelimitedTXTTreeSchema )
-					((DelimitedTXTTreeSchema)treeNode).setLineDelimiter((String)aValue);
+					((DelimitedTXTTreeSchema)treeNode).setLineDelimiter(String.valueOf(aValue));
 				break;
 			case 5:
 				if( treeNode instanceof DelimitedTXTTreeSchema )
-					((DelimitedTXTTreeSchema)treeNode).setColumnDelimiter((String)aValue);
+					((DelimitedTXTTreeSchema)treeNode).setColumnDelimiter(String.valueOf(aValue));
 				break;
 		}
 		
@@ -160,16 +135,8 @@ public class PropertyTableModel extends AbstractTableModel {
 					return "Name";
 				case DESCRIPTION:
 					return "Description";
-				case 2:
-					if( treeNode instanceof TXTTreeSchema ) {
-						return "File Reference";
-					} else if( treeNode instanceof TextTreeNode ) {
-						return "Value Type";
-					}
 				case 3:
-					if( treeNode instanceof TXTTreeSchema ) {
-						return "Field Qualifier";
-					} else if( treeNode instanceof DateTreeNode ) {
+					if( treeNode instanceof DateTreeNode ) {
 						return "Date Format";
 					} else if( treeNode instanceof NumericTreeNode ) {
 						return "Number Format";
@@ -194,17 +161,8 @@ public class PropertyTableModel extends AbstractTableModel {
 			case DESCRIPTION:
 				value = treeNode.getDescription();
 				break;
-			case 2:
-				if( treeNode instanceof TXTTreeSchema ) {
-					value = ((TXTTreeSchema)treeNode).getFileRef().getFilePath();
-				} else if( treeNode instanceof TextTreeNode ) {
-					value = ((TextTreeNode)treeNode).getValueType();
-				}
-				break;
 			case 3:
-				if( treeNode instanceof TXTTreeSchema ) {
-					value = ((TXTTreeSchema)treeNode).getFieldQualifier();
-				} else if( treeNode instanceof DateTreeNode ) {
+				if( treeNode instanceof DateTreeNode ) {
 					value = ((DateTreeNode)treeNode).getFieldDateFormat();
 				} else if( treeNode instanceof NumericTreeNode ) {
 					value = ((NumericTreeNode)treeNode).getFieldNumFormat();

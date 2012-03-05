@@ -1,4 +1,4 @@
-package com.felipelo.etlgui;
+package com.felipelo.etlgui.schema;
 
 import br.com.saxes.suite.converter.ValueType;
 import java.awt.Component;

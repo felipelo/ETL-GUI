@@ -1,4 +1,4 @@
-package com.felipelo.etlgui;
+package com.felipelo.etlgui.schema;
 
 import br.com.saxes.suite.converter.ValueType;
 import br.com.saxes.suite.model.TextTreeNode;
@@ -100,7 +100,7 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
         jPanel2.setLayout(new java.awt.BorderLayout());
 
         jTree1.setModel(treeModel);
-        jTree1.setCellRenderer(new DelimitedTXTTreeCellRenderer());
+        jTree1.setCellRenderer(new com.felipelo.etlgui.schema.DefaultTreeNodeTreeCellRenderer());
         jTree1.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
                 jTree1ValueChanged(evt);
