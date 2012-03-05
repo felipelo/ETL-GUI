@@ -53,10 +53,10 @@ public class PropertyTableModel extends AbstractTableModel {
 				rowCount = 4;
 			} else if( treeNode instanceof DateTreeNode ) {
 				rowCount = 4;
-			} else if( treeNode instanceof TextTreeNode ) {
-				rowCount = 3;
 			} else if( treeNode instanceof NumericTreeNode ) {
-				rowCount = 4;
+				rowCount = 4;	
+		} else if( treeNode instanceof TextTreeNode ) {
+				rowCount = 3;
 			} else {
 				rowCount = 2;
 			}
