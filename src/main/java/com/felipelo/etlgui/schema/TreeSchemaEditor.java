@@ -7,6 +7,7 @@ import br.com.saxes.suite.model.txt.LineTreeNode;
 import com.felipelo.etlgui.schema.model.DateMutable;
 import com.felipelo.etlgui.schema.model.NumericMutable;
 import com.felipelo.etlgui.schema.model.TextMutable;
+import com.felipelo.etlgui.schema.model.TreeNodeMutable;
 import com.felipelo.etlgui.schema.model.txt.DelimitedTXTMutable;
 import com.felipelo.etlgui.schema.txt.DateNodePropTableModel;
 import com.felipelo.etlgui.schema.txt.DelimitedTXTTreeSchemaPropTableModel;
@@ -41,8 +42,8 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
 		_line.setName("Line");
 		treeSchema.setRoot( _line );
 		
-		DefaultMutableTreeNode _mTreeSchema = new DefaultMutableTreeNode(treeSchema);
-		DefaultMutableTreeNode _mLine = new DefaultMutableTreeNode(_line);
+		DelimitedTXTMutable _mTreeSchema = new DelimitedTXTMutable(treeSchema);
+		TreeNodeMutable _mLine = new TreeNodeMutable(_line);
 		
 		_mTreeSchema.add( _mLine );
 		

@@ -34,8 +34,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.felipelo.etl.kernel</groupId>
-      <artifactId>ETLKernel</artifactId>
+      <groupId>com.felipelo.etl</groupId>
+      <artifactId>ETL</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
