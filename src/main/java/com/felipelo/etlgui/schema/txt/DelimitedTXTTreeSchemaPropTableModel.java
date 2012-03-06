@@ -1,5 +1,6 @@
 package com.felipelo.etlgui.schema.txt;
 
+import br.com.saxes.suite.model.txt.DelimitedTXTTreeSchema;
 import br.com.saxes.suite.model.txt.TXTTreeSchema;
 import com.felipelo.etlgui.schema.PropertyTableModel;
 import javax.swing.tree.DefaultTreeModel;
@@ -8,9 +9,9 @@ import javax.swing.tree.DefaultTreeModel;
  *
  * @author felipe.lorenz
  */
-public class TXTTreeSchemaPropTableModel extends PropertyTableModel {
+public class DelimitedTXTTreeSchemaPropTableModel extends PropertyTableModel {
 	
-	public TXTTreeSchemaPropTableModel( DefaultTreeModel treeModel ) {
+	public DelimitedTXTTreeSchemaPropTableModel( DefaultTreeModel treeModel ) {
 		super(treeModel);
 	}
 	
@@ -19,7 +20,7 @@ public class TXTTreeSchemaPropTableModel extends PropertyTableModel {
 		 if (aValue == null)
 			return;
 		
-		TXTTreeSchema _treeSchema = (TXTTreeSchema)treeNode;
+		DelimitedTXTTreeSchema _treeSchema = (DelimitedTXTTreeSchema)treeNode;
 			
 		switch(rowIndex) {
 			case 2:
@@ -27,6 +28,13 @@ public class TXTTreeSchemaPropTableModel extends PropertyTableModel {
 				break;
 			case 3:
 				_treeSchema.setFieldQualifier(String.valueOf(aValue));
+				break;
+			case 4:
+				_treeSchema.setLineDelimiter(String.valueOf(aValue));
+				break;
+			case 5:
+				_treeSchema.setColumnDelimiter(String.valueOf(aValue));
+				break;
 		}
 		
 		super.setValueAt(aValue, rowIndex, columnIndex);
@@ -46,7 +54,10 @@ public class TXTTreeSchemaPropTableModel extends PropertyTableModel {
 					return "File Reference";
 				case 3:
 					return "Field Qualifier";
-					
+				case 4:
+					return "Line Delimiter";
+				case 5:
+					return "Column Delimiter";
 			}
 		}
 		
@@ -54,7 +65,7 @@ public class TXTTreeSchemaPropTableModel extends PropertyTableModel {
 			return value;
 		}
 		
-		TXTTreeSchema _treeSchema = (TXTTreeSchema)treeNode;
+		DelimitedTXTTreeSchema _treeSchema = (DelimitedTXTTreeSchema)treeNode;
 		
 		switch(rowIndex) {
 			case 2:
@@ -63,7 +74,12 @@ public class TXTTreeSchemaPropTableModel extends PropertyTableModel {
 			case 3:
 				value = _treeSchema.getFieldQualifier();
 				break;
-				
+			case 4:
+				value = _treeSchema.getLineDelimiter();
+				break;
+			case 5:
+				value = _treeSchema.getColumnDelimiter();
+				break;
 		}
 		
 		return value;

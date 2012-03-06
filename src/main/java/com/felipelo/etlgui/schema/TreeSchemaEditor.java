@@ -4,7 +4,14 @@ import br.com.saxes.suite.converter.ValueType;
 import br.com.saxes.suite.model.TextTreeNode;
 import br.com.saxes.suite.model.txt.DelimitedTXTTreeSchema;
 import br.com.saxes.suite.model.txt.LineTreeNode;
-import javax.swing.DefaultCellEditor;
+import com.felipelo.etlgui.schema.model.DateMutable;
+import com.felipelo.etlgui.schema.model.NumericMutable;
+import com.felipelo.etlgui.schema.model.TextMutable;
+import com.felipelo.etlgui.schema.model.txt.DelimitedTXTMutable;
+import com.felipelo.etlgui.schema.txt.DateNodePropTableModel;
+import com.felipelo.etlgui.schema.txt.DelimitedTXTTreeSchemaPropTableModel;
+import com.felipelo.etlgui.schema.txt.NumericNodePropTableModel;
+import com.felipelo.etlgui.schema.txt.TextNodePropTableModel;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.event.TreeModelEvent;
@@ -172,6 +179,15 @@ private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN
 			tableModel.setTreeNode(null);
 			return;
 		}
+		
+		if( _treeNode instanceof DelimitedTXTMutable )
+			tableModel = new DelimitedTXTTreeSchemaPropTableModel(treeModel);
+		else if ( _treeNode instanceof TextMutable )
+			tableModel = new TextNodePropTableModel(treeModel);
+		else if ( _treeNode instanceof NumericMutable )
+			tableModel = new NumericNodePropTableModel(treeModel);
+		else if ( _treeNode instanceof DateMutable )
+			tableModel = new DateNodePropTableModel(treeModel);
 
 		tableModel.setTreeNode( _treeNode );
 		if( _treeNode.getUserObject() instanceof TextTreeNode ) {

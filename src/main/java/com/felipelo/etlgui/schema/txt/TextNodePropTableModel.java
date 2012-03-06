@@ -1,7 +1,6 @@
 package com.felipelo.etlgui.schema.txt;
 
 import br.com.saxes.suite.model.TextTreeNode;
-import br.com.saxes.suite.model.txt.TXTTreeSchema;
 import com.felipelo.etlgui.schema.PropertyTableModel;
 import com.felipelo.etlgui.schema.model.TextMutable;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -46,8 +45,10 @@ public class TextNodePropTableModel extends PropertyTableModel {
 				break;
 				
 		 }
+		 super.setValueAt(aValue, rowIndex, columnIndex);
 	}
 	
+	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		Object value;
 		
