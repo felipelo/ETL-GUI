@@ -1,9 +1,13 @@
 package com.felipelo.etlgui.schema.txt;
 
+import br.com.saxes.suite.converter.ValueType;
 import br.com.saxes.suite.model.DateTreeNode;
+import br.com.saxes.suite.model.NumericTreeNode;
 import br.com.saxes.suite.model.TextTreeNode;
 import com.felipelo.etlgui.schema.PropertyTableModel;
 import com.felipelo.etlgui.schema.model.DateMutable;
+import com.felipelo.etlgui.schema.model.NumericMutable;
+import com.felipelo.etlgui.schema.model.TextMutable;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -31,13 +35,30 @@ public class DateNodePropTableModel extends PropertyTableModel {
 					int _index = treeModel.getIndexOfChild( _parent, mutableTreeNode );
 					DefaultMutableTreeNode _oldMutable = mutableTreeNode;
 					
-					DateTreeNode _dateTN = new DateTreeNode();
-					_dateTN.setId( _dateTreeNode.getId() );
-					_dateTN.setName( _dateTreeNode.getName() );
-					_dateTN.setDescription( _dateTreeNode.getDescription() );
-					_dateTN.setParentTreeNode( _dateTreeNode.getParentTreeNode() );
-					mutableTreeNode = new DateMutable( _dateTN );
-					this.treeNode = _dateTN;
+					switch((ValueType)aValue) {
+						case TEXT:
+							TextTreeNode _textTN = new TextTreeNode();
+							_textTN.setId( _dateTreeNode.getId() );
+							_textTN.setName( _dateTreeNode.getName() );
+							_textTN.setDescription( _dateTreeNode.getDescription() );
+							_textTN.setParentTreeNode( _dateTreeNode.getParentTreeNode() );
+
+							mutableTreeNode = new TextMutable( _textTN );
+							this.treeNode = _textTN;
+
+							break;
+						case NUMERIC:
+							NumericTreeNode _numTN = new NumericTreeNode();
+							_numTN.setId( _dateTreeNode.getId() );
+							_numTN.setName( _dateTreeNode.getName() );
+							_numTN.setDescription( _dateTreeNode.getDescription() );
+							_numTN.setParentTreeNode( _dateTreeNode.getParentTreeNode() );
+							
+							mutableTreeNode = new NumericMutable( _numTN );
+							this.treeNode = _numTN;
+							
+							break;
+					}
 					
 					treeModel.insertNodeInto( mutableTreeNode, _parent, _index );
 					treeModel.removeNodeFromParent( _oldMutable );

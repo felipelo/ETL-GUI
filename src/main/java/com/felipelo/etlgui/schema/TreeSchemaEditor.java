@@ -189,6 +189,10 @@ private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN
 			tableModel = new NumericNodePropTableModel(treeModel);
 		else if ( _treeNode instanceof DateMutable )
 			tableModel = new DateNodePropTableModel(treeModel);
+		else
+			tableModel = new PropertyTableModel(treeModel);
+		
+		jTable1.setModel(tableModel);
 
 		tableModel.setTreeNode( _treeNode );
 		if( _treeNode.getUserObject() instanceof TextTreeNode ) {
@@ -220,7 +224,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 			
 			_line.addChild( _newTextNode );
 			
-			DefaultMutableTreeNode _newNode = new DefaultMutableTreeNode( _newTextNode );
+			TextMutable _newNode = new TextMutable(_newTextNode);
 			
 			_node.insert(_newNode, _node.getChildCount());
 			treeModel.reload(_node);

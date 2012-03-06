@@ -35,6 +35,7 @@ public class PropertyTableModel extends AbstractTableModel {
 			rowCount = 0;
 			this.treeNode = null;
 		} else {
+			treeNode = (TreeNode) mutableTreeNode.getUserObject();
 			this.mutableTreeNode = (TreeNodeMutable) mutableTreeNode;
 			rowCount = this.mutableTreeNode.getRowCount();
 		}
