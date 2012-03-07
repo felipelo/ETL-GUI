@@ -30,6 +30,10 @@ public class PropertyTableModel extends AbstractTableModel {
 		this.treeModel = treeModel;
 	}
 	
+	public void setTreeModel( DefaultTreeModel treeModel ) {
+		this.treeModel = treeModel;
+	}
+	
 	public void setTreeNode( DefaultMutableTreeNode mutableTreeNode ) {
 		if( mutableTreeNode == null ) {
 			rowCount = 0;
@@ -61,10 +65,12 @@ public class PropertyTableModel extends AbstractTableModel {
 		fireTableCellUpdated(rowIndex, columnIndex);
     }
 
+	@Override
 	public int getRowCount() {		
 		return rowCount;
 	}
 
+	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		
 		Object value = null;
@@ -94,6 +100,7 @@ public class PropertyTableModel extends AbstractTableModel {
 		return value;
 	}
 
+	@Override
 	public int getColumnCount() {
 		return columns.length;
 	}

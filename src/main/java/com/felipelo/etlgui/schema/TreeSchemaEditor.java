@@ -15,8 +15,7 @@ import com.felipelo.etlgui.schema.txt.NumericNodePropTableModel;
 import com.felipelo.etlgui.schema.txt.TextNodePropTableModel;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
+import javax.swing.event.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
@@ -42,19 +41,25 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
 		_line.setName("Line");
 		treeSchema.setRoot( _line );
 		
-		DelimitedTXTMutable _mTreeSchema = new DelimitedTXTMutable(treeSchema);
-		TreeNodeMutable _mLine = new TreeNodeMutable(_line);
+		treeModel = new DefaultTreeModel( null );
+		
+		DelimitedTXTMutable _mTreeSchema = new DelimitedTXTMutable(treeSchema, new DelimitedTXTTreeSchemaPropTableModel(treeModel));
+		TreeNodeMutable _mLine = new TreeNodeMutable(_line, new PropertyTableModel(treeModel));
 		
 		_mTreeSchema.add( _mLine );
 		
-		treeModel = new DefaultTreeModel( _mTreeSchema );
+		treeModel.setRoot(_mTreeSchema);
+		
 		tableModel = new PropertyTableModel( treeModel );
 		
 		treeModel.addTreeModelListener( new TreeModelListener() {
 
+			@Override
 			public void treeNodesChanged(TreeModelEvent e) {}
+			@Override
 			public void treeNodesRemoved(TreeModelEvent e) {}
 
+			@Override
 			public void treeNodesInserted(TreeModelEvent e) {
 				for( Object _on : e.getChildren() ) {
 					TreeNode[] _treeNodes = treeModel.getPathToRoot((TreeNode)_on);
@@ -64,6 +69,7 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
 				}
 			}
 
+			@Override
 			public void treeStructureChanged(TreeModelEvent e) {
 				jTree1.expandPath( e.getTreePath() );
 				jTree1.setSelectionPath( e.getTreePath() );
@@ -179,23 +185,14 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
 private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jTree1ValueChanged
-		DefaultMutableTreeNode _treeNode = (DefaultMutableTreeNode)jTree1.getLastSelectedPathComponent();
+		TreeNodeMutable _treeNode = (TreeNodeMutable)jTree1.getLastSelectedPathComponent();
 		
 		if( _treeNode == null ) {
 			tableModel.setTreeNode(null);
 			return;
 		}
 		
-		if( _treeNode instanceof DelimitedTXTMutable )
-			tableModel = new DelimitedTXTTreeSchemaPropTableModel(treeModel);
-		else if ( _treeNode instanceof TextMutable )
-			tableModel = new TextNodePropTableModel(treeModel);
-		else if ( _treeNode instanceof NumericMutable )
-			tableModel = new NumericNodePropTableModel(treeModel);
-		else if ( _treeNode instanceof DateMutable )
-			tableModel = new DateNodePropTableModel(treeModel);
-		else
-			tableModel = new PropertyTableModel(treeModel);
+		tableModel = _treeNode.getPropTableModel();
 		
 		jTable1.setModel(tableModel);
 
@@ -229,7 +226,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 			
 			_line.addChild( _newTextNode );
 			
-			TextMutable _newNode = new TextMutable(_newTextNode);
+			TextMutable _newNode = new TextMutable(_newTextNode, new TextNodePropTableModel(treeModel));
 			
 			_node.insert(_newNode, _node.getChildCount());
 			treeModel.reload(_node);

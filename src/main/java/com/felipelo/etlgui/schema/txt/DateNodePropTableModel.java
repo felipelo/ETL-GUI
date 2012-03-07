@@ -43,7 +43,7 @@ public class DateNodePropTableModel extends PropertyTableModel {
 							_textTN.setDescription( _dateTreeNode.getDescription() );
 							_textTN.setParentTreeNode( _dateTreeNode.getParentTreeNode() );
 
-							mutableTreeNode = new TextMutable( _textTN );
+							mutableTreeNode = new TextMutable( _textTN, new TextNodePropTableModel(treeModel) );
 							this.treeNode = _textTN;
 
 							break;
@@ -54,7 +54,7 @@ public class DateNodePropTableModel extends PropertyTableModel {
 							_numTN.setDescription( _dateTreeNode.getDescription() );
 							_numTN.setParentTreeNode( _dateTreeNode.getParentTreeNode() );
 							
-							mutableTreeNode = new NumericMutable( _numTN );
+							mutableTreeNode = new NumericMutable( _numTN, new NumericNodePropTableModel(treeModel) );
 							this.treeNode = _numTN;
 							
 							break;

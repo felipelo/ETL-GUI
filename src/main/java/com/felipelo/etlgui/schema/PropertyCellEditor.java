@@ -18,11 +18,13 @@ public class PropertyCellEditor
 {
 	private JTextField value;
 	
+	@Override
 	public Object getCellEditorValue() {		
 		return value.getText();
 	}
 
 
+	@Override
 	public Component getTableCellEditorComponent(
 			JTable table, 
 			Object value, 
@@ -35,6 +37,7 @@ public class PropertyCellEditor
 		_jTextField.setFont(table.getFont());
 		_jTextField.setText((String)value);
 		_jTextField.addActionListener( new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				stopCellEditing();
 			}

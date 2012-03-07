@@ -43,18 +43,18 @@ public class NumericNodePropTableModel extends PropertyTableModel {
 							_textTN.setDescription( _numericTreeNode.getDescription() );
 							_textTN.setParentTreeNode( _numericTreeNode.getParentTreeNode() );
 
-							mutableTreeNode = new TextMutable( _textTN );
+							mutableTreeNode = new TextMutable( _textTN, new TextNodePropTableModel(treeModel) );
 							this.treeNode = _textTN;
 
 							break;
-							case DATE:
+						case DATE:
 							DateTreeNode _dateTN = new DateTreeNode();
 							_dateTN.setId( _numericTreeNode.getId() );
 							_dateTN.setName( _numericTreeNode.getName() );
 							_dateTN.setDescription( _numericTreeNode.getDescription() );
 							_dateTN.setParentTreeNode( _numericTreeNode.getParentTreeNode() );
 							
-							mutableTreeNode = new DateMutable( _dateTN );
+							mutableTreeNode = new DateMutable( _dateTN, new DateNodePropTableModel(treeModel) );
 							this.treeNode = _dateTN;
 							
 							break;
