@@ -140,6 +140,11 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setPreferredSize(new java.awt.Dimension(25, 25));
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         jToolBar1.add(jButton2);
 
         jPanel2.add(jToolBar1, java.awt.BorderLayout.PAGE_START);
@@ -230,6 +235,13 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 			treeModel.reload(_node);
 		}
 }//GEN-LAST:event_btnAddActionPerformed
+
+	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+		DefaultMutableTreeNode _node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
+		if( _node.getChildCount() > 0 )
+			return;
+		treeModel.removeNodeFromParent(_node);
+	}//GEN-LAST:event_jButton2ActionPerformed
 
 	/**
 	 * @param args the command line arguments
