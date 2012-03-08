@@ -1,8 +1,6 @@
 package com.felipelo.etlgui.schema;
 
 import br.com.saxes.suite.model.TreeNode;
-import br.com.saxes.suite.model.TreeSchema;
-import br.com.saxes.suite.model.txt.LineTreeNode;
 import java.awt.Component;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;

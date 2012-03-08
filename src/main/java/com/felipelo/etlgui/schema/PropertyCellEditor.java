@@ -12,10 +12,8 @@ import javax.swing.table.TableCellEditor;
  *
  * @author felipe
  */
-public class PropertyCellEditor 
-		extends AbstractCellEditor 
-		implements TableCellEditor 
-{
+public class PropertyCellEditor extends AbstractCellEditor implements TableCellEditor {
+	
 	private JTextField value;
 	
 	@Override

@@ -1,11 +1,10 @@
 package com.felipelo.etlgui.schema;
 
 import br.com.saxes.suite.model.TreeNode;
+import com.felipelo.etlgui.schema.model.TreeNodeMutable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-
-import com.felipelo.etlgui.schema.model.TreeNodeMutable;
 		
 /**
  *

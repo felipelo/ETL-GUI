@@ -2,8 +2,6 @@ package com.felipelo.etlgui.schema;
 
 import br.com.saxes.suite.converter.ValueType;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import javax.swing.JComboBox;
@@ -13,9 +11,8 @@ import javax.swing.JTable;
  *
  * @author felipe
  */
-public class TextPropertyCellEditor 
-		extends PropertyCellEditor
-{
+public class TextPropertyCellEditor extends PropertyCellEditor {
+	
 	private JComboBox comp;
 	
 	@Override
@@ -37,7 +34,7 @@ public class TextPropertyCellEditor
 			int row, 
 			int column) 
 	{
-		if( column == 1 && row == 2 ) {
+		if( row == 2 ) {
 			comp = new JComboBox();
 			comp.setFont(table.getFont());
 			comp.setBorder(null);
@@ -46,21 +43,16 @@ public class TextPropertyCellEditor
 			}
 			comp.setSelectedItem(value);
 			comp.addItemListener( new ItemListener() {
+				@Override
 				public void itemStateChanged(ItemEvent e) {
 					stopCellEditing();
 				}
 			});
-//			comp.addActionListener(new ActionListener() {
-//				public void actionPerformed(ActionEvent e) {
-//					stopCellEditing();
-//				}
-//			});
 			
 			return comp;
 		} else {
 			return super.getTableCellEditorComponent(table, value, isSelected, row, column);
 		}
 	}
-	
 	
 }

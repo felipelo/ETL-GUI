@@ -2,6 +2,7 @@ package com.felipelo.etlgui.schema;
 
 import br.com.saxes.suite.converter.ValueType;
 import br.com.saxes.suite.model.TextTreeNode;
+import br.com.saxes.suite.model.TreeSchema;
 import br.com.saxes.suite.model.txt.DelimitedTXTTreeSchema;
 import br.com.saxes.suite.model.txt.LineTreeNode;
 import com.felipelo.etlgui.schema.model.DateMutable;
@@ -30,25 +31,27 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
 	private DefaultTreeModel treeModel;
 	private PropertyTableModel tableModel;
 	
-	private DelimitedTXTTreeSchema treeSchema;
+	private TreeNodeMutable treeRoot;
 	
 	/** Creates new form TreeSchemaEditor */
-	public TreeSchemaEditor() {	
-		treeSchema = new DelimitedTXTTreeSchema();
-		treeSchema.setName("Delimited Txt Schema");
+	public TreeSchemaEditor( TreeNodeMutable treeRoot) {
+		this.treeRoot = treeRoot;
 		
-		LineTreeNode _line = new LineTreeNode();
-		_line.setName("Line");
-		treeSchema.setRoot( _line );
+//		treeRoot = new DelimitedTXTTreeSchema();
+//		treeSchema.setName("Delimited Txt Schema");
+		
+//		LineTreeNode _line = new LineTreeNode();
+//		_line.setName("Line");
+//		treeSchema.setRoot( _line );
 		
 		treeModel = new DefaultTreeModel( null );
 		
-		DelimitedTXTMutable _mTreeSchema = new DelimitedTXTMutable(treeSchema, new DelimitedTXTTreeSchemaPropTableModel(treeModel));
-		TreeNodeMutable _mLine = new TreeNodeMutable(_line, new PropertyTableModel(treeModel));
+//		DelimitedTXTMutable _mTreeSchema = new DelimitedTXTMutable(treeSchema, new DelimitedTXTTreeSchemaPropTableModel(treeModel));
+//		TreeNodeMutable _mLine = new TreeNodeMutable(_line, new PropertyTableModel(treeModel));
 		
-		_mTreeSchema.add( _mLine );
+//		_mTreeSchema.add( _mLine );
 		
-		treeModel.setRoot(_mTreeSchema);
+		treeModel.setRoot( treeRoot );
 		
 		tableModel = new PropertyTableModel( treeModel );
 		
@@ -78,8 +81,6 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
 		
 		initComponents();
 	}
-	
-//	private void add
 
 	/** This method is called from within the constructor to
 	 * initialize the form.
@@ -249,23 +250,23 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
 		 * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
 		 */
-		try {
-			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-				System.out.println(info.getName());
-				if ("Nimbus".equals(info.getName())) {
-					javax.swing.UIManager.setLookAndFeel(info.getClassName());
-					break;
-				}
-			}
-		} catch (ClassNotFoundException ex) {
-			java.util.logging.Logger.getLogger(TreeSchemaEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		} catch (InstantiationException ex) {
-			java.util.logging.Logger.getLogger(TreeSchemaEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		} catch (IllegalAccessException ex) {
-			java.util.logging.Logger.getLogger(TreeSchemaEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-			java.util.logging.Logger.getLogger(TreeSchemaEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		}
+//		try {
+//			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//				System.out.println(info.getName());
+//				if ("Nimbus".equals(info.getName())) {
+//					javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//					break;
+//				}
+//			}
+//		} catch (ClassNotFoundException ex) {
+//			java.util.logging.Logger.getLogger(TreeSchemaEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//		} catch (InstantiationException ex) {
+//			java.util.logging.Logger.getLogger(TreeSchemaEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//		} catch (IllegalAccessException ex) {
+//			java.util.logging.Logger.getLogger(TreeSchemaEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//			java.util.logging.Logger.getLogger(TreeSchemaEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//		}
 		//</editor-fold>
 
 		/* Create and display the form */
@@ -273,7 +274,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 
 			public void run() {
 				
-				TreeSchemaEditor d = new TreeSchemaEditor();
+				TreeSchemaEditor d = new TreeSchemaEditor( null );
 				d.setLocationRelativeTo(null);
 				d.setVisible(true);
 			}
