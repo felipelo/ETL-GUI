@@ -2,41 +2,46 @@ package com.felipelo.etlgui.schema;
 
 import br.com.saxes.suite.converter.ValueType;
 import br.com.saxes.suite.model.TextTreeNode;
-import br.com.saxes.suite.model.TreeSchema;
-import br.com.saxes.suite.model.txt.DelimitedTXTTreeSchema;
 import br.com.saxes.suite.model.txt.LineTreeNode;
-import com.felipelo.etlgui.schema.model.DateMutable;
-import com.felipelo.etlgui.schema.model.NumericMutable;
 import com.felipelo.etlgui.schema.model.TextMutable;
 import com.felipelo.etlgui.schema.model.TreeNodeMutable;
-import com.felipelo.etlgui.schema.model.txt.DelimitedTXTMutable;
-import com.felipelo.etlgui.schema.txt.DateNodePropTableModel;
-import com.felipelo.etlgui.schema.txt.DelimitedTXTTreeSchemaPropTableModel;
-import com.felipelo.etlgui.schema.txt.NumericNodePropTableModel;
 import com.felipelo.etlgui.schema.txt.TextNodePropTableModel;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
-import javax.swing.event.*;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 /**
  *
  * @author felipe
  */
-public class TreeSchemaEditor extends javax.swing.JFrame {
+public abstract class TreeSchemaEditor extends javax.swing.JFrame {
 
-	private DefaultTreeModel treeModel;
+	protected DefaultTreeModel treeModel;
 	private PropertyTableModel tableModel;
 	
 	private TreeNodeMutable treeRoot;
 	
 	/** Creates new form TreeSchemaEditor */
-	public TreeSchemaEditor( TreeNodeMutable treeRoot) {
-		this.treeRoot = treeRoot;
-		
+	public TreeSchemaEditor() {		
 //		treeRoot = new DelimitedTXTTreeSchema();
 //		treeSchema.setName("Delimited Txt Schema");
 		
@@ -50,8 +55,6 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
 //		TreeNodeMutable _mLine = new TreeNodeMutable(_line, new PropertyTableModel(treeModel));
 		
 //		_mTreeSchema.add( _mLine );
-		
-		treeModel.setRoot( treeRoot );
 		
 		tableModel = new PropertyTableModel( treeModel );
 		
@@ -92,7 +95,9 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        jPanel1 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        jToolBar2 = new javax.swing.JToolBar();
+        jButton1 = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -108,8 +113,30 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
         setTitle("TreeSchema Editor");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        jPanel4.setLayout(new java.awt.BorderLayout());
+
+        jToolBar2.setFloatable(false);
+
+        jButton1.setText("N");
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setMaximumSize(new java.awt.Dimension(36, 36));
+        jButton1.setMinimumSize(new java.awt.Dimension(36, 36));
+        jButton1.setPreferredSize(new java.awt.Dimension(36, 36));
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jToolBar2.add(jButton1);
+
+        jPanel4.add(jToolBar2, java.awt.BorderLayout.CENTER);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        getContentPane().add(jPanel4, gridBagConstraints);
 
         jPanel2.setMinimumSize(new java.awt.Dimension(100, 53));
         jPanel2.setLayout(new java.awt.BorderLayout());
@@ -171,16 +198,14 @@ public class TreeSchemaEditor extends javax.swing.JFrame {
 
         jSplitPane1.setRightComponent(jPanel3);
 
-        jPanel1.add(jSplitPane1, java.awt.BorderLayout.CENTER);
-
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 2;
-        gridBagConstraints.ipady = 2;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        getContentPane().add(jPanel1, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 1);
+        getContentPane().add(jSplitPane1, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -218,21 +243,23 @@ private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN
 
 private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
 		DefaultMutableTreeNode _node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
-		Object _userObj = _node.getUserObject();
-		if( _userObj instanceof LineTreeNode ) {
-			LineTreeNode _line = (LineTreeNode) _userObj;
-			
-			TextTreeNode _newTextNode = new TextTreeNode();
-			_newTextNode.setName("New Node");
-			
-			_line.addChild( _newTextNode );
-			
-			TextMutable _newNode = new TextMutable(_newTextNode, new TextNodePropTableModel(treeModel));
-			
+		
+		TreeNodeMutable _newNode;
+		
+		//if there is no nodes in the tree
+		if( _node == null && treeModel.getRoot() == null ) {
+			_newNode = startNewSchema();
+			treeModel.setRoot(_newNode);
+		} else {
+			_newNode = addNode(_node);		
 			_node.insert(_newNode, _node.getChildCount());
 			treeModel.reload(_node);
 		}
 }//GEN-LAST:event_btnAddActionPerformed
+
+public abstract TreeNodeMutable addNode( DefaultMutableTreeNode selectedNode );
+
+public abstract TreeNodeMutable startNewSchema();
 
 	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 		DefaultMutableTreeNode _node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
@@ -241,56 +268,87 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 		treeModel.removeNodeFromParent(_node);
 	}//GEN-LAST:event_jButton2ActionPerformed
 
-	/**
-	 * @param args the command line arguments
-	 */
-	public static void main(String args[]) {
-		/* Set the Nimbus look and feel */
-		//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-		 * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-		 */
-//		try {
-//			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//				System.out.println(info.getName());
-//				if ("Nimbus".equals(info.getName())) {
-//					javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//					break;
-//				}
-//			}
-//		} catch (ClassNotFoundException ex) {
-//			java.util.logging.Logger.getLogger(TreeSchemaEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//		} catch (InstantiationException ex) {
-//			java.util.logging.Logger.getLogger(TreeSchemaEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//		} catch (IllegalAccessException ex) {
-//			java.util.logging.Logger.getLogger(TreeSchemaEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//			java.util.logging.Logger.getLogger(TreeSchemaEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//		}
-		//</editor-fold>
+	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+		try {
+			Object o[] = getClasses("br.com.saxes.suite.model");
+			JAXBContext context = JAXBContext.newInstance(getClasses("br.com.saxes.suite.model"));
+			
+			Marshaller m = context.createMarshaller();
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			
+			DefaultMutableTreeNode d = (DefaultMutableTreeNode) treeModel.getRoot();
+			m.marshal(d.getUserObject(), System.out);
+		} catch (Exception ex) {
+			Logger.getLogger(TreeSchemaEditor.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		
+	}//GEN-LAST:event_jButton1ActionPerformed
+	
+	private static Class[] getClasses(String packageName)
+            throws ClassNotFoundException, IOException {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        assert classLoader != null;
+        String path = packageName.replace('.', '/');
+        Enumeration<URL> resources = classLoader.getResources(path);
+        List<File> dirs = new ArrayList<File>();
+		ArrayList<Class> classes = new ArrayList<Class>();
+        while (resources.hasMoreElements()) {
+            URL resource = resources.nextElement();
+            dirs.add(new File(resource.getFile()));
+			JarInputStream jarFile = new JarInputStream(new FileInputStream (resource.getFile().substring(5, resource.getFile().indexOf("!"))));
 
-		/* Create and display the form */
-		java.awt.EventQueue.invokeLater(new Runnable() {
-
-			public void run() {
+			JarEntry jarEntry;
+			
+			while (true) {
+				jarEntry = jarFile.getNextJarEntry();
+				if (jarEntry == null) {
+					break;
+				}
 				
-				TreeSchemaEditor d = new TreeSchemaEditor( null );
-				d.setLocationRelativeTo(null);
-				d.setVisible(true);
+				if( jarEntry.getName().startsWith(path) 
+						&& jarEntry.getName().endsWith(".class")) {
+						classes.add(Class.forName(jarEntry.getName().substring(0, jarEntry.getName().length()-".class".length()).replaceAll("/", "\\.")));
+				}
 			}
-		});
-	}
+
+        }
+        
+//        for (File directory : dirs) {
+//            classes.addAll(findClasses(directory, packageName));
+//        }
+        return classes.toArray(new Class[classes.size()]);
+    }
+
+    private static List<Class> findClasses(File directory, String packageName) throws ClassNotFoundException {
+        List<Class> classes = new ArrayList<Class>();
+        if (!directory.exists()) {
+            return classes;
+        }
+        File[] files = directory.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                assert !file.getName().contains(".");
+                classes.addAll(findClasses(file, packageName + "." + file.getName()));
+            } else if (file.getName().endsWith(".class")) {
+                classes.add(Class.forName(packageName + '.' + file.getName().substring(0, file.getName().length() - 6)));
+            }
+        }
+        return classes;
+    }
+	
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JToolBar jToolBar2;
     private javax.swing.JTree jTree1;
     // End of variables declaration//GEN-END:variables
 }
