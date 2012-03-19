@@ -100,7 +100,7 @@ public class TXTTreeSchemaEditor extends TreeSchemaEditor {
 					break;
 				}
 			}
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+		} catch (Exception ex) {
 			java.util.logging.Logger.getLogger(TreeSchemaEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 		}
 
