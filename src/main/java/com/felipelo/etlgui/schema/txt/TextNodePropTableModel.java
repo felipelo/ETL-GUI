@@ -4,6 +4,7 @@ import br.com.saxes.suite.converter.ValueType;
 import br.com.saxes.suite.model.DateTreeNode;
 import br.com.saxes.suite.model.NumericTreeNode;
 import br.com.saxes.suite.model.TextTreeNode;
+import br.com.saxes.suite.model.TreeNode;
 import com.felipelo.etlgui.schema.PropertyTableModel;
 import com.felipelo.etlgui.schema.model.DateMutable;
 import com.felipelo.etlgui.schema.model.NumericMutable;
@@ -31,10 +32,11 @@ public class TextNodePropTableModel extends PropertyTableModel {
 		 switch(rowIndex) {
 			case 2:
 				if( _textTreeNode.getValueType() != aValue) {
-					DefaultMutableTreeNode _parent = (DefaultMutableTreeNode) mutableTreeNode.getParent();
+                    TreeNode _parentTreeNode = treeNode.getParentTreeNode();
+                    DefaultMutableTreeNode _parent = (DefaultMutableTreeNode) mutableTreeNode.getParent();
 					int _index = treeModel.getIndexOfChild( _parent, mutableTreeNode );
 					DefaultMutableTreeNode _oldMutable = mutableTreeNode;
-					 
+                     
 					switch((ValueType)aValue) {
 						case DATE:
 							DateTreeNode _dateTN = new DateTreeNode();
@@ -62,6 +64,9 @@ public class TextNodePropTableModel extends PropertyTableModel {
 					
 					treeModel.insertNodeInto( mutableTreeNode, _parent, _index );
 					treeModel.removeNodeFromParent( _oldMutable );
+                    
+                    int _pos = _parentTreeNode.removeChild(_textTreeNode);
+                    _parentTreeNode.addChild(_pos, treeNode);
 				}
 				break;
 				
